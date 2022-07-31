@@ -1,0 +1,150 @@
+class Review {
+	char rating;
+	string review;
+	int userID;
+	int ItemID;
+	Time time;
+};
+
+enum OrderStatus{
+	PaymentFailed, Accepted, Preparing, OnTheWay, Delivered 
+};
+
+class Order{
+	int orderID;
+	int userID;
+	int restaurantID;
+	int cartID;
+	Time timePlaced, timeDelivered;
+	int valetID;
+	Address address;
+	PaymentMethod method;
+};
+
+enum Cuisine{
+	Italian,
+	NorthIndian,
+	SouthIndian,
+	Chinese,
+	Thai
+};
+
+class Item{
+	id itemID;
+	id restaurantID;
+	string name;
+	float price;
+	vector<Review> getReviews();
+	Cuisine cuisine;
+	bool isAvailable;
+};
+
+class Cart{
+	int cartID;
+	int userId;
+	int restaurantID;
+	bool addItem(Item item);
+	bool removeItem(Item item);
+	vector<Item> getItemsPresent();
+	float getTotal();
+};
+
+class Restaurant{
+	id restaurantID;
+	string name;
+	Address address;
+	vector<Item> items;
+	float taxes, minOrderValue;
+	float getTotal(float total){
+		return total*(1+taxes);
+	}
+};
+
+class User{
+	id userID;
+	Account account;
+	string name;
+	Address address;
+	vector<Review> getReviewsGiven();
+	vector<Order> getOrders();
+	bool updateDetails(name,address);
+	vector<Cart> getUserCarts();
+};
+
+class Payment {
+    bool makePayment();
+}
+
+class creditCardPayment : Public Payment {
+    bool makePayment();
+}
+
+class UPIPayment : Public Payment {
+    bool makePayment();
+}
+
+enum PaymentStatus{
+	SUCCESS, FAILED
+};
+
+class PaymentDetail {
+	int txnId;
+	double amount;
+	PaymentMode mode;
+	string userID;
+	PaymentStatus status;
+	Time time;
+}
+
+enum class PaymentMode {
+    CREDIT_CARD, DEBIT_CARD, UPI, Wallet
+}
+
+enum CouponType{
+    FlatDisc, Percent, Cashback 
+};
+
+//Interface for Coupon
+class Coupon{
+	float discount; // can be percentage or a fix value;
+	string detail;
+	CouponType type;
+	public:
+	virtual bool isEligible(User user, float totalPrice) = 0; //will call all the eligibility methods on user and price.
+	virtual pair<bool,float> getValue(float totalPrice) = 0; //return {false,0} if user is eneligible, {true,value} otherwise
+};
+
+class BANK10 : public Coupon{
+	private BANK10(float discount, string detail, CouponType type)
+	:discount(10)
+	,detail(detail)
+	,type(type){}
+	private: static BANK10* obj;
+	public: static BANK10* getInstance(){
+		if(obj == 0)
+		    obj = new BANK10(10,"10% discount on payment with BANK debit card",Percent);
+		return obj;
+	}
+	bool eligibilityFunc1(User user){}
+	bool eligibilityFunc2(User user){}
+    virtual bool isEligible(User user, float totalPrice){
+	    return eligibilityFunc1(user) and eligibilityFunc2(totalPrice);
+	}
+	virtual pair<bool,float> getValue(float totalPrice){
+	}
+};
+
+
+
+class CouponManager{
+
+	unordered_set<Coupon> coupons;
+	
+	vector<Coupon> getCoupons(){
+		return coupons;
+	}
+	void removeCoupon(Coupon coupon){
+		coupons.erase(coupon);
+	}
+};
+
