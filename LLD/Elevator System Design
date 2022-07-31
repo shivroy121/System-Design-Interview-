@@ -14,6 +14,7 @@ Also before going into OOD details, I want to spend some time about the "Elevato
 
 Elevator Scheduling System can be complicated, before I prepare this OOD, I thought all the elevators in the world has a very simple, common, best scheduling algorithm. However I found out that this is not the truth, there are many algorithms for it(Some ppl even mentioned it is a trade secret...). Based on https://cdmana.com/2021/02/20210202111024127g.html(equivalent Chinese version 中文版: https://cdmana.com/2021/02/20210202090419089B.htm), algorithms can be catogorized as below:
 
+
 Traditional Algorithm
 
 FCFS, , https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics), 其实就是FIFO的另外一种称呼
@@ -36,6 +37,30 @@ PI(Priority Inversion)
 FD-SCAN
 Anyway, the conclusion is that there are many algorithms, no one is perfect, it is NP-Hard problem for 1 elevator without capacity constraint based on http://www.columbia.edu/~cs2035/courses/ieor4405.S13/p14.pdf(not sure for multiple and with capacity constraint, if it is still NP-Hard or not?) I have seen some dicussion saying that oh, this solution is not good blablabla because someone may wait for a long time blablabla...But I think it is fine, it is open-ended, should not be the key of OOD design. We can take the simple strategy, the elevator will first process UP requests where request floor is greater than current floor and then process Down requests where request floor is lower than current floor.
 
+
+We can divide into three main components:
+
+User
+
+User presses the floor button (can be up or down direction) to summon the elevator.
+User presses the elevator button to go to the destination floor.
+Button
+
+An elevator has buttons (ElevatorButton) inside allowing user to choose the destination floor.
+Each floor has two buttons (FloorButton) to summon the elevator to go up or down from that floor.
+When the user presses the button, it illuminates.
+When the elevator reaches the desired floor, the button stops illuminating.
+Calls placeRequest() to insert into the ElevatorRequest queue when button is pressed.
+Elevator
+
+Open or close door.
+Moves up/down.
+Stores states such as direction (up/down), speed, currentFloor.
+We need a queue to store all request, this can all be encapsulated in an ElevatorRequests class. When a user presses a button, this request has to be served and is added to the processing queue. Elevator requests can be scheduled using different scheduling algorithms. ElevatorController controls the elevator by giving it instructions such as move up/down, or start/shutdown. The elevator controller reads the next elevator request and serves it.
+
+This diagram may help :)
+
+0_1462439050435_elevator-class diagram.png
 Core
 
 Elevator
