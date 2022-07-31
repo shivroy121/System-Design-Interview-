@@ -34,9 +34,9 @@ Moves up/down.
 Stores states such as direction (up/down), speed, currentFloor.
 We need a queue to store all request, this can all be encapsulated in an ElevatorRequests class. When a user presses a button, this request has to be served and is added to the processing queue. Elevator requests can be scheduled using different scheduling algorithms. ElevatorController controls the elevator by giving it instructions such as move up/down, or start/shutdown. The elevator controller reads the next elevator request and serves it.
 
-This diagram may help :)
+https://assets.leetcode.com/static_assets/discuss/uploads/files/1462439050719-elevator-class-diagram.png
 
-0_1462439050435_elevator-class diagram.png
+
 Traditional Algorithm
 
 FCFS, , https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics), 其实就是FIFO的另外一种称呼
